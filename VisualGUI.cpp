@@ -10,8 +10,7 @@ using namespace System;
 using namespace System::Windows::Forms;
 using namespace System::Windows::Forms::DataVisualization::Charting;
 
-// application reads from the specified serial port and reports the collected data
-
+// application reads data from ultrasound sensor and plots it
 
 
 [STAThread]
@@ -28,14 +27,6 @@ int main(array<String^>^ args)
 
 void radar_gui::MyForm::receive_serial_data()
 {
-	//DeleteFile(L"data.txt");
-	//CreateFile(L"data.txt",NULL,NULL,NULL,NULL,NULL,NULL);
-	//std::fstream outputFile("data.txt");
-	//readResult = SP->ReadData(incomingData, dataLength);
-	//outputFile.open("data.txt");
-	//outputFile << incomingData;
-	//outputFile.close();
-
 	
 	readFile.open("C:\\Python27\\data3.txt");
 	
@@ -44,8 +35,6 @@ void radar_gui::MyForm::receive_serial_data()
 		
 		while (!readFile.eof()) {
 
-			//readFile >> angle[i];
-			//readFile >> distance[i];
 			readFile >> current_angle;
 
 			if (current_angle <= 165 && current_angle >= 15) {
@@ -57,77 +46,33 @@ void radar_gui::MyForm::receive_serial_data()
 					if ( ( (current_angle > previous_angle) && (current_angle < (previous_angle + 5)) ) || ( (current_angle > (previous_angle - 5)) && (current_angle < previous_angle) ) || previous_angle == 181)
 					{
 						textBox1->Text = distance + "";
-						//textBox2->Text = current_angle + "";
 						chart2->Series["Series1"]->Points->AddXY(current_angle, distance);
 					}
-
-					
 				}
 				else if (distance >= 100) {
 					chart2->Series["Series1"]->Points->AddXY(current_angle, 100);
 				}
-
-				if (current_angle == 165 || current_angle == 15) {
 				
-					//chart2->Series->Clear();
-					//chart2->Series->Add("Series1");
-					//chart2->Series["Series1"]->Points->Clear();
+				if (current_angle == 165 || current_angle == 15) {
 					//break;
 				}
 				previous_angle = current_angle;
 			}
 			else {
-				//chart2->Series["Series1"]->Points->Clear();
 				readFile >> distance;
 
 				if ((distance == previous_angle + 1) || (distance == previous_angle - 1)) {
 					readFile >> distance;
 				}
-				
-				//previous_angle = 181;
-			}
-
-			
-			
+			}	
 		}
-
-		//if (clear == true) {
-			
-			//chart2->Series->Clear();
-			//chart2->Series->Add("Series1");
-			//clear = false;
-		//}
-
-
 	}
-	
-	
-
 	readFile.close();
-
-//	incomingData[readResult] = 0;
-	
 }
 
 void radar_gui::MyForm::load_charts()
 {
-	/*
-	chart1->Series->Add("radar1");
-	chart1->Series["radar1"]->ChartType = DataVisualization::Charting::SeriesChartType::Radar;
-	chart1->Series["radar1"]->BorderWidth = 5;
-	chart1->ChartAreas["area"]->AxisX->Enabled = DataVisualization::Charting::AxisEnabled::True;
-	chart1->ChartAreas["area"]->AxisX->Minimum = 0;
-	chart1->ChartAreas["area"]->AxisX->Maximum = 180;
-	chart1->ChartAreas["area"]->AxisX->Interval = 5;
-	chart1->ChartAreas["area"]->AxisY->Minimum = 0;
-	chart1->ChartAreas["area"]->AxisY->Maximum = 100;
-	chart1->ChartAreas["area"]->AxisY->Interval = 10;
 
-	*/
-	
-
-	//chart2->Series->Add("Series1");
-	//chart2->Series["Series1"]->ChartType = DataVisualization::Charting::SeriesChartType::Radar;
 	chart2->Series["Series1"]->BorderWidth = 5;
 	chart2->ChartAreas["area"]->AxisX->Enabled = DataVisualization::Charting::AxisEnabled::True;
 	chart2->ChartAreas["area"]->AxisX->Minimum = -100;
@@ -137,17 +82,6 @@ void radar_gui::MyForm::load_charts()
 	chart2->ChartAreas["area"]->AxisY->Maximum = 100;
 	chart2->ChartAreas["area"]->AxisY->Interval = 5;
 	
-	/*
-	chart2->ChartAreas["area"]->InnerPlotPosition->Auto = false;
-	chart2->ChartAreas["area"]->InnerPlotPosition->Height = 100;
-	chart2->ChartAreas["area"]->InnerPlotPosition->Width = 100;
-	chart2->ChartAreas["area"]->InnerPlotPosition->X = 0;
-	chart2->ChartAreas["area"]->InnerPlotPosition->Y = 0;
-	
-	
-	*/
-	
-
 }
 
 void radar_gui::MyForm::plot()
